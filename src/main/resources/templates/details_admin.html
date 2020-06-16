@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>内容</title>
+    <script src="/static/js/jquery.min.js"></script>
+    <script src="/static/js/semantic.min.js"></script>
+    <link rel="stylesheet" href="/static/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/static/css/semantic.min.css">
+</head>
+<body>
+<nav class="navbar navbar-inverse">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" >后台管理系统</a>
+        </div>
+        <div class="collapse navbar-collapse" id="myNavbar">
+            <ul class="nav navbar-nav">
+                <li class="active"><a href="/show">用户审核页</a></li>
+                <li><a href="/show_abut">用户对接页</a></li>
+                <li><a href="/user_Management">用户管理页</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+<div id="container" class="ui main text container">
+    <input onclick="history.go(-1)" type="button" class="ui button" value="返回上页">
+    <div class="ui text container" th:each="txt:${list}" style="margin-top: 25px" id="text-content">
+        <div class="ui segment" style="font-size: xx-large">
+        <h1 class="ui header" th:text="${txt.title}"></h1>
+        <!--<div class="ui segment"  th:each="txt:${list}" >-->
+        <!--<h1 class="ui header" th:text="${txt.title}"></h1>-->
+        <!--<h4 th:text="${txt.title}"></h4>-->
+        <div style="font-size:medium">
+            <span>发布时间：</span> <small th:text="${#dates.format(txt.date,'yyyy-MM-dd HH:mm')}"></small>
+            &nbsp;  &nbsp;  &nbsp;  &nbsp;
+            <span>发布用户：</span><small th:text="${txt.author}" id="author"></small>
+            &nbsp;  &nbsp;  &nbsp;  &nbsp;
+            <span>专业领域：</span><small th:text="${txt.speciality}"></small>
+            <!--<small>点击量: <span class="badge" th:text="${txt.views}"></span></small>-->
+        </div>
+        <p class="ui text-area" id="txtcontent" th:utext="${txt.txtcontent}" style="height: auto;word-break: break-all"></p>
+        </div>
+    </div>
+</div>
+</body>
+</html>

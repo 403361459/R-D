@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.gpy.demo.mapper.SearchMapper">
+<select id="getlist"  resultType="com.gpy.demo.entity.Text">
+    select * from text
+    <where>
+     id=#{id}
+    <if test="title!=''">
+        and title like CONCAT('%',#{title},'%')
+    </if>
+    <if test="type>-1">
+        and type=#{type}
+    </if>
+    <if test="style!=''">
+        and speciality=#{style}
+    </if>
+    <if test="status>-1">
+        and txtstatus=#{status}
+    </if>
+   <choose>
+       <when test="time==0">
+           and DATE_SUB(CURDATE(), INTERVAL 1 DAY)&lt;=date(`date`)
+       </when>
+       <when test="time==1">
+           and DATE_SUB(CURDATE(), INTERVAL 3 DAY)&lt;=date(`date`)
+       </when>
+       <when test="time==2">
+           and DATE_SUB(CURDATE(), INTERVAL 7 DAY)&lt;=date(`date`)
+       </when>
+       <when test="time==3">
+           and DATE_SUB(CURDATE(), INTERVAL 30 DAY)&lt;=date(`date`)
+       </when>
+       <when test="time==4">
+           and `date` between date_sub(now(),interval 6 month) and now();
+       </when>
+       <otherwise>
+           and 1=1
+       </otherwise>
+   </choose>
+    </where>
+</select>
+
+
+    <select id="getOthers"  resultType="com.gpy.demo.entity.Text">
+    select * from text
+    <where>
+        id!=#{id} and txtstatus='1'
+        <if test="title!=''">
+            and title like CONCAT('%',#{title},'%')
+        </if>
+        <if test="author!=''">
+            and author like CONCAT('%',#{author},'%')
+        </if>
+        <if test="type>-1">
+            and type=#{type}
+        </if>
+        <if test="style!=''">
+            and speciality=#{style}
+        </if>
+        <choose>
+            <when test="time==0">
+                and DATE_SUB(CURDATE(), INTERVAL 1 DAY)&lt;=date(`date`)
+            </when>
+            <when test="time==1">
+                and DATE_SUB(CURDATE(), INTERVAL 3 DAY)&lt;=date(`date`)
+            </when>
+            <when test="time==2">
+                and DATE_SUB(CURDATE(), INTERVAL 7 DAY)&lt;=date(`date`)
+            </when>
+            <when test="time==3">
+                and DATE_SUB(CURDATE(), INTERVAL 30 DAY)&lt;=date(`date`)
+            </when>
+            <when test="time==4">
+                and `date` between date_sub(now(),interval 6 month) and now();
+            </when>
+            <otherwise>
+                and 1=1
+            </otherwise>
+        </choose>
+    </where>
+</select>
+
+    <select id="getResult" resultType="com.gpy.demo.entity.Abutment">
+        select * from abutment
+        <where>
+            <if test="party_A!=''">
+                and party_A =#{party_A}
+            </if>
+            <if test="party_B!=''">
+                and party_B=#{party_B}
+            </if>
+            <if test="title!=''">
+                and title like CONCAT('%',#{title},'%')
+            </if>
+            <if test="speciality!=''">
+                and speciality=#{speciality}
+            </if>
+            <if test="type>-1">
+                and type =${type}
+            </if>
+            <choose>
+                <when test="time==0">
+                    and DATE_SUB(CURDATE(), INTERVAL 1 DAY)&lt;=date(`date`)
+                </when>
+                <when test="time==1">
+                    and DATE_SUB(CURDATE(), INTERVAL 3 DAY)&lt;=date(`date`)
+                </when>
+                <when test="time==2">
+                    and DATE_SUB(CURDATE(), INTERVAL 7 DAY)&lt;=date(`date`)
+                </when>
+                <when test="time==3">
+                    and DATE_SUB(CURDATE(), INTERVAL 30 DAY)&lt;=date(`date`)
+                </when>
+                <when test="time==3">
+                    and `date` between date_sub(now(),interval 6 month) and now();
+                </when>
+                <otherwise>
+                    and 1=1
+                </otherwise>
+            </choose>
+        </where>
+    </select>
+</mapper>

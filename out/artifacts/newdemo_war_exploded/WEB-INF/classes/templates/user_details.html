@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<head>
+    <meta charset="UTF-8">
+    <title>我的消息</title>
+    <script src="/static/js/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/semantic-ui/2.2.4/semantic.min.css">
+    <link rel="stylesheet" href="/static/css/bootstrap.min.css">
+    <link href="/static/js/bootstrap.min.js">
+    <link rel="stylesheet" href="/static/css/back.css">
+</head>
+<body>
+<nav class="ui inverted attached segment">
+    <div class="ui inverted menu">
+        <h2 class="ui teal header item" >江苏科技大学需求征集发布系统</h2>
+        <a href="/index" class="item" >首页</a>
+        <a href="/publish/others" class="item">查询</a>
+        <a href="/publish" class="item">发布</a>
+        <a href="/mypublish" class="item">我的发布</a>
+        <a href="/myabutment" class="item">我的对接</a>
+        <a href="/loginstart" class="item">登录/注册</a>
+        <div class="right m-item m-mobile-hide menu" style="padding-right: 10px">
+            <div class="ui dropdown  item">
+                <div class="text">
+                    <!--<P th:text="${session.name}">未登录</P>-->
+                    <p sec:authentication="name"  id="name"></p>
+                    <!--<p sec:authentication="principal.authorities"> </p>-->
+                </div>
+                <i class="dropdown icon"></i>
+                <div class="menu">
+                    <a href="/logout" class="item">注销</a>
+                    <a href="/updatestart" class="item">个人信息</a>
+                </div>
+            </div>
+        </div>
+        <div class="item">
+            <a  href="/system_Message"  class="item">系统消息：</a>
+            <i class="alarm icon" id="m1" ></i>
+        </div>
+        <div class="item" >
+            <a  href="/user_Message"  class="item">对接消息：</a>
+            <i class="alarm icon" id="m2"></i>
+        </div>
+        <script  th:inline="javascript">
+            var receiver=document.getElementById("name").innerText;
+            if(receiver!="anonymousUser")
+            {
+                setInterval("test()",500);
+                function test() {
+                    $.ajax({
+                        type: "POST",
+                        url: "/newMessage",
+                        async: false,
+                        data: {
+                            receiver:receiver
+                        },
+                        error: function (error) {
+                            alert("error!")
+                            //alert(JSON.stringify(error));
+                        },
+                        success: function (data) {
+                            if( [[${session.num}]]==null)
+                            {
+                                $("#m1").text(0);
+                            }
+                            else
+                            {
+                                $("#m1").text([[${session.num}]]);
+                            }
+                            if([[${session.num2}]]==null)
+                            {
+                                $("#m2").text(0);
+                            }
+                            else
+                            {
+                                $("#m2").text([[${session.num2}]]);
+                            }
+
+                        }
+                    })
+                }
+            }
+            else
+            {
+                $("#name").text("未登录");
+            }
+
+        </script>
+    </div>
+</nav>
+<!--<p th:text="${list[0].realname}"></p>-->
+<!--<p th:text="${list[0].experience}"></p>-->
+<div class="ui container" style="margin-top: 200px" >
+<form class="ui form">
+    <div class="field" style="text-align: center">
+    <p style="font-size: 30px">申请方信息</p>
+    </div>
+    <div class="field">
+        <label style="font-size:20px">真实姓名：</label>
+        <input type="text" id="realName" name="realName" th:value="${list[0].realname}" readonly="readonly" style="font-size: 15px">
+    </div>
+    <div class="field">
+        <label style="font-size:20px">相关工作经验简介：</label>
+        <textarea id="work-experience" th:text="${list[0].experience}" readonly="readonly" style="font-size: 15px"></textarea>
+    </div>
+    <button onclick="history.go(-1)" type="button" class="btn-lg">返回上页</button>
+</form>
+</div>
+</body>
+</html>

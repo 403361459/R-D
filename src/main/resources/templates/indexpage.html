@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"  xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+    <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>首页</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/semantic-ui/2.2.4/semantic.min.css">
+    <link rel="stylesheet" href="/static/css/bootstrap.min.css">
+        <link rel="stylesheet" href="/static/css/back.css">
+    <script src="/static/js/jquery.min.js"></script>
+
+</head>
+<body>
+<!-- 导航  -->
+<nav class="ui inverted attached segment">
+     <div class="ui inverted menu">
+         <h2 class="ui teal header item" style="font-size: 20px" >江苏科技大学需求征集发布系统</h2>
+         <a href="/index" class="item" >首页</a>
+         <a href="/publish/others" class="item">查询</a>
+         <a href="/publish" class="item">发布</a>
+         <a href="/mypublish" class="item">我的发布</a>
+         <a href="/myabutment" class="item">我的对接</a>
+         <a href="/loginstart" class="item">登录/注册</a>
+         <div class="right m-item m-mobile-hide menu" style="padding-right: 10px">
+             <div class="ui dropdown  item">
+                 <div class="text">
+                     <p sec:authentication="name"  id="name"><p/>
+                     <!--<p sec:authentication="principal.authorities"> </p>-->
+                 </div>
+                 <i class="dropdown icon"></i>
+                 <div class="menu">
+                     <a href="/logout" class="item">注销</a>
+                     <a href="/updatestart" class="item">个人信息</a>
+                 </div>
+             </div>
+         </div>
+         <div class="item">
+                <a  href="/system_Message"  class="item">系统消息：</a>
+                 <i class="alarm icon" id="m1" ></i>
+         </div>
+         <div class="item" >
+             <a  href="/user_Message"  class="item">对接消息：</a>
+             <i class="alarm icon" id="m2"></i>
+         </div>
+    <script  th:inline="javascript">
+        var receiver=document.getElementById("name").innerText;
+        if(receiver!="anonymousUser")
+        {
+            setInterval("test()",500);
+            function test() {
+                    $.ajax({
+                        type: "POST",
+                        url: "/newMessage",
+                        async: false,
+                        data: {
+                            receiver:receiver
+                        },
+                        error: function (error) {
+                            alert("登录失效！请重新登录！")
+                            //alert(JSON.stringify(error));
+                        },
+                        success: function (data) {
+                          if( [[${session.num}]]==null)
+                          {
+                              $("#m1").text(0);
+                          }
+                          else
+                          {
+                              $("#m1").text([[${session.num}]]);
+                          }
+                          if([[${session.num2}]]==null)
+                          {
+                                  $("#m2").text(0);
+                          }
+                          else {
+                              $("#m2").text([[${session.num2}]]);
+                          }
+                        }
+                    })
+                }
+        }
+        else
+        {
+            $("#name").text("未登录");
+        }
+    </script>
+     </div>
+</nav>
+<!--中间内容-->
+<div id="container" class="ui container">
+        <div class="col-md-9" style="margin-top: 100px">
+                <div class="ui segment"   th:each="txt:${content}" >
+                    <a th:href="@{'/index/detail?txtid='+${txt.txtid}}"><h4  th:if="${txt.type} eq 0" th:text="${txt.title}+'('+需求+')'"></h4><h4  th:if="${txt.type} eq 1" th:text="${txt.title}+'('+成果+')'"></h4></a>
+                    <p>
+                       <span>发布时间：</span> <small th:text="${#dates.format(txt.date,'yyyy-MM-dd HH:mm')}"></small>
+                        <span>发布用户：</span><small th:text="${txt.author}"></small>
+                        <small>点击量: <span class="badge" th:text="${txt.views}"></span></small>
+                    </p>
+                    <p class="text-muted" th:utext="${#strings.abbreviate(txt.txtcontent,150)}"></p>
+                    <!--<p>-->
+                        <!--<span class="badge">关键字</span>-->
+                        <!--<span class="badge">关键字</span>-->
+                        <!--<span class="badge">关键字</span>-->
+                    <!--</p>-->
+                    <!--<div style="border: 1px dashed black;"></div>-->
+                </div>
+                <!-- 分页 -->
+                <div class="text-center">
+                    <ul class="pagination m-b-5 pull-right">
+                    <li th:if="${list.hasPreviousPage}">
+                        <a th:href="@{'/index?page='+${list.prePage}}" aria-label="Previous"> <i class="fa fa-angle-left"></i>&nbsp;上一页</a>
+                    </li>
+                    <th:block th:each="nav : ${list.navigatepageNums}">
+                        <li th:class="${nav==list.pageNum}?'active':''">
+                            <a th:href="@{'/index?page='+${nav}}" th:text="${nav}"></a></li>
+                    </th:block>
+
+                    <th:block th:if="${list.hasNextPage}">
+                        <li><a
+                                th:href="@{'/index?page='+${list.nextPage}}"
+                                aria-label="Next"> 下一页&nbsp;<i class="fa fa-angle-right"></i>
+                        </a></li>
+                    </th:block>
+
+                    <li><span th:text="'共'+${list.pages}+'页'"></span></li>
+                    </ul>
+                </div>
+
+</div>
+</div>
+
+<!--底部-->
+<!--<div id="footer">-->
+<!--<footer class="ui inverted segment">-->
+    <!--<div class="ui center aligned container">-->
+        <!--<div class="ui inverted divided stackable grid">-->
+            <!--<div class="three wide column">-->
+                <!--<div class="ui inverted link list">-->
+                    <!--<div class="item">-->
+
+                    <!--</div>-->
+                <!--</div>-->
+            <!--</div>-->
+            <!--<div class="three wide column">-->
+                <!--<h4 class="ui inverted header m-text-thin m-text-spaced " >最新发布</h4>-->
+                <!--<div class="ui inverted link list">-->
+                    <!--<a href="#" class="item m-text-thin">用户</a>-->
+                    <!--<a href="#" class="item m-text-thin">用户</a>-->
+                    <!--<a href="#" class="item m-text-thin">用户</a>-->
+                <!--</div>-->
+            <!--</div>-->
+            <!--<div class="three wide column">-->
+                <!--<h4 class="ui inverted header m-text-thin m-text-spaced ">联系我</h4>-->
+                <!--<div class="ui inverted link list">-->
+                    <!--<a href="#" class="item m-text-thin">Email：403361459@qq.com</a>-->
+                    <!--<a href="#" class="item m-text-thin">QQ：403361459@qq.com</a>-->
+                <!--</div>-->
+            <!--</div>-->
+            <!--<div class="seven wide column">-->
+                <!--<h4 class="ui inverted header m-text-thin m-text-spaced ">需求征集发布系统</h4>-->
+                <!--<p class="m-text-thin m-text-spaced m-opacity-mini">WELCOME！</p>-->
+            <!--</div>-->
+        <!--</div>-->
+        <!--<div class="ui inverted section divider"></div>-->
+        <!--<p class="m-text-thin m-text-spaced m-opacity-tiny">Copyright © 2020 - 2021 Designed by gpy</p>-->
+    <!--</div>-->
+<!--</footer>-->
+<!--</div>-->
+<!--<script src="https://cdn.jsdelivr.net/npm/jquery@3.2/dist/jquery.min.js"></script>-->
+<script src="https://cdn.jsdelivr.net/semantic-ui/2.2.4/semantic.min.js"></script>
+<script>
+    $('.ui.dropdown').dropdown({
+        on : 'hover'
+    });
+    // function blur_search() {
+    //     var content=document.getElementById("text_search").value;
+    //     $.ajax({
+    //         type:"post",
+    //         url:"/index/search",
+    //         async:false,
+    //         data:{
+    //             content:content
+    //         },
+    //         error: function (error) {
+    //             alert("error!")
+    //         },
+    //         success:function (data) {
+    //             window.location.href="http://localhost:8080/search"
+    //         }
+    //     })
+    // }
+</script>
+</body>
+</html>

@@ -1,0 +1,104 @@
+<!--<!DOCTYPE html>-->
+<!--<html lang="en">-->
+<!--<head>-->
+    <!--<meta charset="UTF-8">-->
+    <!--<title>后台管理</title>-->
+<!--</head>-->
+<!--<body>-->
+<!--<h1>管理员登录</h1>-->
+<!--<form action="/admin-login" style="text-align: center">-->
+   <!--用户名：<input type="text" id="admin_name" name="name">-->
+    <!--<br>-->
+    <!--密码：<input type="text" id="admin_pass" name="pass">-->
+    <!--<br>-->
+    <!--<input type="submit" value="提交">-->
+<!--</form>-->
+<!--</body>-->
+<!--</html>-->
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>后台登录</title>
+    <link rel="stylesheet" href="/static/css/bootstrap.min.css">
+</head>
+<style>
+
+</style>
+<body>
+<!-- 导航  -->
+<!--<nav class="ui inverted attached segment">-->
+<!--<div class="ui container">-->
+<!--<div class="ui inverted menu">-->
+<!--<h2 class="ui teal header item" >需求征集发布系统</h2>-->
+<!--<a href="/index" class="item" >首页</a>-->
+<!--<a href="/publish" class="item">发布</a>-->
+<!--<a href="#" class="item">登录/注册</a>-->
+<!--<div class="right m-item item m-mobile-hide">-->
+<!--<div class="ui icon inverted transparent input m-margin-tb-tiny">-->
+<!--<input type="text" placeholder="Search....">-->
+<!--<i class="search link icon"></i>-->
+<!--</div>-->
+<!--</div>-->
+<!--<div class="right m-item m-mobile-hide menu">-->
+<!--<div class="ui dropdown  item">-->
+<!--<div class="text">-->
+<!--<P th:text="${session.name}">未登录</P>-->
+<!--</div>-->
+<!--<i class="dropdown icon"></i>-->
+<!--<div class="menu">-->
+<!--<a href="/logout" class="item">注销</a>-->
+<!--</div>-->
+<!--</div>-->
+<!--</div>-->
+<!--</div>-->
+<!--</div>-->
+<!--</nav>-->
+<nav class="navbar navbar-inverse">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" >后台管理系统</a>
+        </div>
+        <!--<div class="collapse navbar-collapse" id="myNavbar">-->
+            <!--<ul class="nav navbar-nav">-->
+                <!--<li class="active"><a href="/index">用户对接页</a></li>-->
+                <!--<li><a href="/show_abut"></a></li>-->
+            <!--</ul>-->
+        <!--</div>-->
+    </div>
+</nav>
+
+<div class ="ui container" >
+    <form class="ui form segment" action="/admin-login" style="width: 50%;margin: auto">
+        <h1 align="center">管理员登录</h1>
+        <div class="field">
+            <label>用户名：</label>
+            <input type="text" class="form-control" id="username" name="name" placeholder="请输入用户名或者手机号">
+        </div>
+        <br>
+        <div class="field">
+            <label>密码：</label>
+            <input type="password" class="form-control" id="password" name="pass" placeholder="请输入密码">
+        </div>
+        <br>
+        <br>
+        <button type="submit" class="btn btn-default">登录</button>
+    </form>
+</div>
+<!--底部-->
+<footer class="navbar-inverse  navbar-fixed-bottom">
+    <div class="container">
+        底部内容区域
+    </div>
+</footer>
+<script src="https://code.jquery.com/jquery.js"></script>
+<script src="/static/js/bootstrap.min.js"></script>
+
+
+</body>
+</html>

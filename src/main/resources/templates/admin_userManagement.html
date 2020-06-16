@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>用户管理</title>
+    <script src="/static/js/jquery.min.js"></script>
+    <script src="/static/js/echarts.min.js"></script>
+    <script src="/static/js/semantic.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/semantic-ui/2.2.4/semantic.min.js"></script>
+    <script src="/static/js/tablesort.min.js"></script>
+    <link rel="stylesheet" href="/static/css/semantic.min.css">
+    <link rel="stylesheet" href="/static/css/bootstrap.min.css">
+</head>
+<body>
+<nav class="navbar navbar-inverse">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" >后台管理系统</a>
+        </div>
+        <div class="collapse navbar-collapse" id="myNavbar">
+            <ul class="nav navbar-nav">
+                <li ><a href="/show">用户审核页</a></li>
+                <li><a href="/show_abut">用户对接页</a></li>
+                <li class="active"><a href="/user_Management">用户管理页</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+<div class="ui container">
+    <h2 align="center">用户管理中心</h2>
+    <!--<div class="ui inverted segment">-->
+        <!--<div class="ui inverted form">-->
+                <!--<div class="field">-->
+                    <!--<label>用户名：</label>-->
+                    <!--<input placeholder="用户名" type="text">-->
+                <!--</div>-->
+                <!--<div class="field">-->
+                    <!--<label>手机号：</label>-->
+                    <!--<input placeholder="手机号" type="text">-->
+                <!--</div>-->
+            <!--<div class="ui button">添加用户</div>-->
+        <!--</div>-->
+    <!--</div>-->
+    <div align="center">
+        <form class="ui form" action="/user_Management/userFilter">
+            <div class="three fields">
+                <div class="field">
+                    <div class="ui huge button" onclick="showAdd()">添加用户</div>
+                </div>
+                <div class="field">
+                    <div class="ui huge button" onclick="showReset()">密码重置</div>
+                </div>
+                <div class="field">
+                   <div class="ui icon input">
+                       <input type="text" placeholder="搜索用户..." name="searchUser">
+                       <button type="submit" class="ui button"><i class="search icon"></i></button>
+                   </div>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="ui tiny modal"  id="add" >
+        <div class="ui header">添加用户</div>
+        <div class="ui content">
+            <div class="ui form add">
+                <div class="field">
+                    <label>用户名</label>
+                     <input type="text" id="user" name="user">
+                </div>
+                <div class="field">
+                    <label>手机号</label>
+                    <input type="text" id="phonenum" name="phonenum">
+                </div>
+                <button class="ui button"  type="button" onclick="addUser()">添加</button>
+            </div>
+        </div>
+    </div>
+    <div class="ui tiny modal"  id="edit" >
+        <div class="ui header">编辑用户</div>
+        <div class="ui content">
+            <div class="ui form">
+                <div class="field">
+                    <label>用户名</label>
+                    <input type="text" id="edit_user">
+                </div>
+                <div class="field">
+                    <label>手机号</label>
+                    <input type="text" id="edit_phone">
+                </div>
+                <div class="field">
+                    <label>绑定邮箱</label>
+                    <input type="text" id="edit_email">
+                </div>
+                <input type="hidden" id="edit_id">
+                <button class="ui button" type="button" onclick="editUser()">确认更改</button>
+            </div>
+        </div>
+    </div>
+    <div class="ui tiny modal"  id="Reset" >
+        <div class="ui header">密码重置</div>
+        <div class="ui content">
+            <div class="ui form">
+                <div class="field">
+                    <label>手机号</label>
+                    <input type="text" id="phone2">
+                </div>
+                <button  class="ui button"  type="button" onclick="resetUser()">重置</button>
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $('table').tablesort()
+        });
+
+        $('.ui.form.add')
+            .form({
+                inline:true,
+                fields: {
+                    user: {
+                        identifier: 'user',
+                        rules: [
+                            {
+                                type   : 'empty',
+                                prompt : '请填写用户名'
+                            },
+
+                        ]
+                    },
+                    phonenum: {
+                        identifier: 'phonenum',
+                        rules: [
+                            {
+                                type   : 'empty',
+                                prompt : '请填写手机号'
+                            },
+                            {
+                                type: 'exactLength[11]',
+                                prompt: "手机号长度不正确"
+                            }
+                        ]
+                    },
+
+                }
+            })
+        ;
+        function showAdd() {
+            $('#add')
+                .modal('show')
+            ;
+        }
+        function showEdit(id,name,phone,email) {
+            $("#edit_id").val(id);
+            $("#edit_user").val(name);
+            $("#edit_phone").val(phone);
+            $("#edit_email").val(email);
+            $('#edit')
+                .modal('show')
+            ;
+        }
+        function showReset() {
+            $('#Reset')
+                .modal('show')
+            ;
+        }
+        function addUser(){
+
+            if( $('.ui.form.add').form('is valid')) {
+                var user = document.getElementById("user").value;
+                var phonenum = document.getElementById("phonenum").value;
+                $.ajax({
+                    type: "POST",
+                    url: "/user_Management/search",
+                    async: false,
+                    data: {
+                        user: user,
+                        phonenum: phonenum
+                    },
+                    error: function (error) {
+                        alert("error!");
+                        //alert(JSON.stringify(error));
+                    },
+                    success: function (data) {
+                        if (data == "success") {
+                            $.ajax({
+                                type: "POST",
+                                url: "/user_Management/add",
+                                async: false,
+                                data: {
+                                    user: user,
+                                    phonenum: phonenum
+                                },
+                                error: function (error) {
+                                    alert("error!");
+                                    //alert(JSON.stringify(error));
+                                },
+                                success: function (data) {
+                                    alert("添加成功!");
+                                }
+                            });
+                            window.location.reload();
+                        }
+                        else {
+                            alert("用户或手机号已被注册！请重新添加！");
+                        }
+                    }
+                });
+            }
+        }
+
+        function editUser() {
+             var id=document.getElementById("edit_id").value;
+             var  name=document.getElementById("edit_user").value;
+             var  phone=document.getElementById("edit_phone").value;
+             var  email=document.getElementById("edit_email").value;
+            $.ajax({
+                type: "POST",
+                url: "/user_Management/update",
+                async: false,
+                data: {
+                    id:id,
+                    name:name,
+                    phone:phone,
+                    email:email
+                },
+                error: function(error) {
+                    alert("error!");
+                    //alert(JSON.stringify(error));
+                },
+                success: function(data) {
+                    alert("修改成功!");
+                }
+            });
+            window.location.reload();
+        }
+
+        function resetUser() {
+            var phone=document.getElementById("phone2").value;
+            $.ajax({
+                type: "POST",
+                url: "/user_Management/reset",
+                async: false,
+                data: {
+                  phone:phone
+                },
+                error: function(error) {
+                    alert("error!");
+                    //alert(JSON.stringify(error));
+                },
+                success: function(data) {
+                    alert("重置成功!");
+                }
+            });
+            window.location.reload();
+        }
+
+    </script>
+
+    <table class="ui sortable celled table" id="userMessage" style="text-align: center">
+        <thead>
+        <tr>
+            <th class="sorted ascending">用户名</th>
+            <th class="sorted ascending">手机号</th>
+            <th class="sorted ascending">邮箱</th>
+            <th class="sorted ascending">操作</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="e:${content}">
+            <td th:text="${e.username}"></td>
+            <td th:text="${e.phonenum}"></td>
+            <td th:text="${e.email}"></td>
+            <td><button class="edit ui button" type="button">编辑</button>&nbsp;<button class="delete ui button" type="button" >删除</button> <input type="hidden" id="id" th:value="${e.id}"> </td>
+        </tr>
+        </tbody>
+        <script type="text/javascript">
+            $(document).ready(function() {
+                $("#userMessage").on('click', '.edit', function () {
+                    var currentRow = $(this).closest("tr");
+                    var id=$(this).next().next().val();
+                    var name= currentRow.find("td:eq(0)").text();
+                    var phone= currentRow.find("td:eq(1)").text();
+                    var email= currentRow.find("td:eq(2)").text();
+                    showEdit(id,name,phone,email);
+
+                });
+
+                $("#userMessage").on('click', '.delete', function () {
+                    var currentRow = $(this).closest("tr");
+                    var name= currentRow.find("td:eq(0)").text();
+                    var phone= currentRow.find("td:eq(1)").text();
+                    if(confirm("确认删除用户"+name)==true)
+                    {
+                        $.ajax({
+                            type: "POST",
+                            url: "/user_Management/delete",
+                            async: false,
+                            data: {
+                                phone:phone
+                            },
+                            error: function(error) {
+                                alert("error!");
+                                //alert(JSON.stringify(error));
+                            },
+                            success: function(data) {
+                                alert("删除成功!");
+                            }
+                        });
+                        window.location.reload();
+                    }
+                });
+                });
+        </script>
+    </table>
+    <ul class="pagination m-b-5 pull-right">
+        <li th:if="${list.hasPreviousPage}">
+            <a th:href="@{'/user_Management?page='+${list.prePage}}" aria-label="Previous"> <i class="fa fa-angle-left"></i>&nbsp;上一页</a>
+        </li>
+        <th:block th:each="nav : ${list.navigatepageNums}">
+            <li th:class="${nav==list.pageNum}?'active':''">
+                <a th:href="@{'/user_Management?page='+${nav}}" th:text="${nav}"></a></li>
+        </th:block>
+
+        <th:block th:if="${list.hasNextPage}">
+            <li><a
+                    th:href="@{'/user_Management?page='+${list.nextPage}}"
+                    aria-label="Next"> 下一页&nbsp;<i class="fa fa-angle-right"></i>
+            </a></li>
+        </th:block>
+
+        <li><span th:text="'共'+${list.pages}+'页'"></span></li>
+    </ul>
+</div>
+</body>
+</html>

@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title th:text="${list[0].title}"></title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/semantic-ui/2.2.4/semantic.min.css">
+    <link rel="stylesheet" href="/static/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/static/css/back.css">
+    <script src="/static/js/jquery.min.js"></script>
+    <script src="/static/js/semantic.min.js"></script>
+</head>
+<body>
+<!-- 导航  -->
+<nav class="ui inverted attached segment">
+        <div class="ui inverted menu">
+            <h2 class="ui teal header item" >江苏科技大学需求征集发布系统</h2>
+            <a href="/index" class="item" >首页</a>
+            <a href="/publish/others" class="item">查询</a>
+            <a href="/publish" class="item">发布</a>
+            <a href="/mypublish" class="item">我的发布</a>
+            <a href="/myabutment" class="item">我的对接</a>
+            <a href="/loginstart" class="item">登录/注册</a>
+            <div class="right m-item m-mobile-hide menu" style="padding-right: 10px">
+                <div class="ui dropdown  item">
+                    <div class="text">
+                        <!--<P th:text="${session.name}">未登录</P>-->
+                        <p sec:authentication="name" id="name"></p>
+                    </div>
+                    <i class="dropdown icon"></i>
+                    <div class="menu">
+                        <a href="/logout" class="item">注销</a>
+                        <a href="/updatestart" class="item">个人信息</a>
+                    </div>
+                </div>
+            </div>
+            <div class="item">
+                <a  href="/system_Message"  class="item">系统消息：</a>
+                <i class="alarm icon"></i>
+            </div>
+
+            <div class="item">
+                <a  href="/user_Message"  class="item">对接消息：</a>
+                <i class="alarm icon"></i>
+            </div>
+        </div>
+
+</nav>
+<!--中间内容-->
+<div id="container" class="ui main text container" >
+  <div class="ui text container" th:each="txt:${list}" style="margin-top: 25px;font-size: xx-large" id="text-content">
+     <h1 class="ui header" th:text="${txt.title}"></h1>
+            <!--<div class="ui segment"  th:each="txt:${list}" >-->
+                <!--<h1 class="ui header" th:text="${txt.title}"></h1>-->
+               <!--<h4 th:text="${txt.title}"></h4>-->
+      <div style="font-size: large">
+            <span>发布时间：</span> <small th:text="${#dates.format(txt.date,'yyyy-MM-dd HH:mm')}"></small>
+               &nbsp;  &nbsp;  &nbsp;  &nbsp;
+            <span>发布用户：</span><small th:text="${txt.author}"></small>
+               &nbsp;  &nbsp;  &nbsp;  &nbsp;
+            <span>专业领域：</span><small th:text="${txt.speciality}"></small>
+               <!--<small>点击量: <span class="badge" th:text="${txt.views}"></span></small>-->
+      </div>
+              <p class="text-muted" id="txtcontent" th:utext="${txt.txtcontent}"></p>
+                <button type="button" id="btn1" class="btnAbut btn-lg">对接</button>
+                <button type="button" id="btn2" class="btnDel btn-lg" hidden>撤回我的发布</button>
+                <button type="button" id="btn3" disabled="disabled" class="btnAlready_abut btn-lg" hidden>已对接</button>
+                <button type="button" id="btn4" disabled="disabled" class="btnAlready_send btn-lg" hidden>已发送对接请求</button>
+                <button type="button" id="btn5" class="btnUpdate btn-lg" hidden>修改</button>
+                <button type="button" id="btn6" class="btnRevoke btn-lg" hidden>撤销对接</button>
+                <button onclick="history.go(-1)" type="button" class="btn-lg">返回上页</button>
+                <input type="hidden" id="txtid" th:value="${txt.txtid}">
+                <input type="hidden" id="userid" th:value="${txt.id}">
+                <input type="hidden" id="txttitle" th:value="${txt.title}">
+                <input type="hidden" id="txtstatus" th:value="${txt.txtstatus}">
+                <input type="hidden" id="type" th:value="${txt.type}">
+                <input type="hidden" id="speciality" th:value="${txt.speciality}">
+                <input type="hidden" id="handle" th:value="${txt.handle}">
+                <input type="hidden" id="author" th:value="${txt.author}">
+  </div>
+
+    <div class="ui fullscreen modal" style="height: 100%; ">
+        <i class="close icon"></i>
+        <div class="header">
+            填写以下信息：
+        </div>
+        <div class="content">
+            <div class="ui form">
+            <div class="field">
+                <label>姓名：</label>
+                <input type="text" placeholder="请输入真实姓名" id="realName" name="realName">
+            </div>
+            <div class="field">
+                <label>相关工作经验简介：</label>
+                <textarea id="work-experience"></textarea>
+            </div>
+            <button class="ui button" type="button" id="confirm">确认对接</button>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script type="text/javascript" th:inline="javascript">
+
+    // 可简化不用--th：if实现
+    $(document).ready(function() {
+        var author=document.getElementById("author").value;
+        var txtid=document.getElementById("txtid").value;
+        var title=document.getElementById("txttitle").value;
+        var userid=document.getElementById("userid").value;
+        var user=document.getElementById("name").innerText;
+        var txtstatus=document.getElementById("txtstatus").value;
+        var type=document.getElementById("type").value;
+        var handle=document.getElementById("handle").value;
+        var speciality=document.getElementById("speciality").value;
+         if(author==user)
+        {
+            //管理员未处理发布时可以修改
+            if(txtstatus==0&&handle==0)
+            {
+                $("#btn1").hide();
+                $("#btn2").show();
+                $("#btn5").show();
+            }
+            else if(txtstatus==2)
+            {
+                $("#btn1").hide();
+                $("#btn2").hide();
+                $("#btn3").show();
+                $("#btn6").show();
+            }
+            else
+            {
+                $("#btn1").hide();
+                $("#btn2").show();
+            }
+        }
+        else
+        {
+            if(txtstatus==2)
+            {
+                $("#btn1").hide();
+                $("#btn2").hide();
+                $("#btn3").show();
+            }
+
+        }
+
+        $.ajax({
+            type:"POST",
+            url:"/views_count",
+            async:false,
+            data:{
+                txtid:txtid,
+                user:user
+            },
+            error:function (error) {
+                alert("统计失败")
+            },
+            success:function (data) {
+                // alert("统计成功")
+            }
+        });
+        $("#text-content").on('click','.btnAbut',function(){
+            $('.ui.fullscreen.modal')
+                .modal('show')
+            ;
+        });
+
+        $("#confirm").click(function () {
+            var realname=document.getElementById("realName").value;
+            var experience=document.getElementById("work-experience").value;
+                $.ajax({
+                    type: "POST",
+                    url: "/abut",
+                    async: false,
+                    data: {
+                        party_A:author,
+                        party_B:user,
+                        title:title,
+                        txtid:txtid,
+                        userid:userid,
+                        user:user,
+                        realname:realname,
+                        experience:experience,
+                        type:type,
+                        speciality:speciality
+                    },
+                    error: function(error) {
+                        alert("error!");
+                        //alert(JSON.stringify(error));
+                    },
+                    success: function(data) {
+                        alert("已发送对接请求!");
+                    }
+                });
+                window.location.reload();
+        });
+
+        $("#text-content").on('click','.btnDel',function(){
+            if(confirm("确认撤回发布？")==true)
+            {
+                $.ajax({
+                    type: "POST",
+                    url: "/delete_text",
+                    async: false,
+                    data: {
+                        txtid:txtid
+                    },
+                    error: function(error) {
+                        alert("error!")
+                        //alert(JSON.stringify(error));
+                    },
+                    success: function(data) {
+                        alert("已撤回发布!");
+                        window.location.href="http://localhost:8080/index";
+                    }
+                });
+
+            }
+        });
+        $("#text-content").on('click','.btnRevoke',function() {
+            $.ajax({
+                type: "POST",
+                url: "/delete_abut/search",
+                async: false,
+                data: {
+                    txtid:txtid
+                },
+                error: function(error) {
+                    alert("error!")
+                    //alert(JSON.stringify(error));
+                },
+                success: function(list) {
+                    var personlist = eval(list);//处理
+                    var namelist = '';
+                    for (var i = 0; i < personlist.length; i++) {
+                        if (i < personlist.length - 1) {
+                            namelist += personlist[i]+',';
+                        }
+                        else {
+                            namelist += personlist[i];
+                        }
+                    }
+                    if (confirm("您已和" + namelist + "对接该项目，确认撤销该对接？") == true)
+                    {
+
+                        //消息发送并删除对应对接数据
+                        $.ajax({
+                            type: "POST",
+                            url: "/delete_abut/delete",
+                            async: false,
+                            data: {
+                                txtid:txtid,
+                                list:JSON.stringify(namelist.replace("\"", "")),
+                                title:title,
+                                sender:user
+                            },
+                            error: function(error) {
+                                alert("error!");
+                                // alert(JSON.stringify(error));
+                            },
+                            success: function(data) {
+                                alert("已撤销该对接!");
+                                window.location.reload();
+                            }
+                        });
+                    }
+
+                }
+            });
+        });
+        $("#text-content").on('click','.btnUpdate',function(){
+            if(confirm("确认修改该发布？")==true)
+            {
+                window.location.href="http://localhost:8080/publish/update?txtid="+txtid;
+                // var txtcontent=$("#txtcontent").text();
+                // var title=$("#txttitle").val();
+                // var speciality=$("#speciality").val();
+                // var type=$("#type").val();
+                // $.ajax({
+                //     type: "POST",
+                //     url: "/publish/update",
+                //     async: false,
+                //     data: {
+                //         txtid:txtid
+                //     },
+                //     error: function(error) {
+                //         alert("error!")
+                //         //alert(JSON.stringify(error));
+                //     },
+                //     success: function(data) {
+                //         alert("已更新发布!");
+                //         window.location.href="http://localhost:8080/index";
+                //     }
+                // });
+            }
+        });
+    });
+</script>
+<!--底部-->
+<script>
+    $('.ui.dropdown').dropdown({
+        on : 'hover'
+    });
+    $('.ui.radio.checkbox')
+        .checkbox()
+    ;
+</script>
+</body>
+</html>

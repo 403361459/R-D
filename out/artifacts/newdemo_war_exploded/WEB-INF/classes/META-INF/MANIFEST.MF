@@ -1,0 +1,33 @@
+Manifest-Version: 1.0
+Class-Path: spring-boot-starter-tomcat-2.2.3.RELEASE.jar spring-boot-s
+ tarter-web-2.2.3.RELEASE.jar slf4j-api-1.7.30.jar spring-boot-2.2.3.R
+ ELEASE.jar jackson-core-2.10.2.jar mybatis-spring-boot-starter-1.2.0.
+ jar attoparser-2.0.5.RELEASE.jar tomcat-embed-websocket-9.0.30.jar th
+ ymeleaf-3.0.11.RELEASE.jar jakarta.activation-1.2.1.jar jboss-logging
+ -3.4.1.Final.jar jakarta.validation-api-2.0.2.jar spring-boot-starter
+ -2.2.3.RELEASE.jar jackson-module-parameter-names-2.10.2.jar jul-to-s
+ lf4j-1.7.30.jar spring-boot-starter-validation-2.2.3.RELEASE.jar mysq
+ l-connector-java-8.0.13.jar spring-boot-starter-logging-2.2.3.RELEASE
+ .jar logback-classic-1.2.3.jar spring-expression-5.2.3.RELEASE.jar sn
+ akeyaml-1.25.jar unbescape-1.1.6.RELEASE.jar classmate-1.5.1.jar spri
+ ng-tx-5.2.3.RELEASE.jar thymeleaf-extras-java8time-3.0.4.RELEASE.jar 
+ thymeleaf-spring5-3.0.11.RELEASE.jar spring-boot-starter-thymeleaf-2.
+ 2.3.RELEASE.jar jackson-databind-2.10.2.jar commons-io-2.4.jar spring
+ -beans-5.2.3.RELEASE.jar HikariCP-3.4.2.jar tomcat-embed-el-9.0.30.ja
+ r spring-jcl-5.2.3.RELEASE.jar commons-codec-1.9.jar spring-context-5
+ .2.3.RELEASE.jar spring-aop-5.2.3.RELEASE.jar json-20170516.jar logba
+ ck-core-1.2.3.jar spring-boot-starter-json-2.2.3.RELEASE.jar spring-w
+ eb-5.2.3.RELEASE.jar jakarta.mail-1.6.4.jar jackson-datatype-jsr310-2
+ .10.2.jar spring-webmvc-5.2.3.RELEASE.jar commons-collections-3.2.1.j
+ ar log4j-to-slf4j-2.12.1.jar spring-core-5.2.3.RELEASE.jar mybatis-3.
+ 4.2.jar jackson-annotations-2.10.2.jar commons-fileupload-1.3.2.jar h
+ ibernate-validator-6.0.18.Final.jar spring-context-support-5.2.3.RELE
+ ASE.jar tomcat-embed-core-9.0.30.jar jakarta.annotation-api-1.3.5.jar
+  spring-jdbc-5.2.3.RELEASE.jar mybatis-spring-boot-autoconfigure-1.2.
+ 0.jar mybatis-spring-1.3.1.jar spring-boot-starter-jdbc-2.2.3.RELEASE
+ .jar commons-lang-2.5.jar spring-boot-starter-mail-2.2.3.RELEASE.jar 
+ ezmorph-1.0.6.jar log4j-api-2.12.1.jar jackson-datatype-jdk8-2.10.2.j
+ ar commons-logging-1.1.1.jar commons-beanutils-1.8.0.jar spring-boot-
+ autoconfigure-2.2.3.RELEASE.jar
+Main-Class: com.gpy.demo.DemoApplication
+

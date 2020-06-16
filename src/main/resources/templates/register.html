@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>注册</title>
+    <link rel="stylesheet" href="/static/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/static/css/semantic.min.css">
+    <script src="/static/js/jquery.min.js"></script>
+    <script src="/static/js/semantic.min.js"></script>
+    <script src="/static/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="/static/css/back.css">
+</head>
+<body>
+<!-- 导航  -->
+<nav class="ui inverted attached segment">
+    <div class="ui inverted menu">
+        <h2 class="ui teal header item" >江苏科技大学需求征集发布系统</h2>
+        <a href="/index" class="item" >首页</a>
+        <a href="/publish/others" class="item">查询</a>
+        <a href="/publish" class="item">发布</a>
+        <a href="/mypublish" class="item">我的发布</a>
+        <a href="/myabutment" class="item">我的对接</a>
+        <a href="/loginstart" class="item">登录/注册</a>
+        <div class="right m-item m-mobile-hide menu" style="padding-right: 10px">
+            <div class="ui dropdown  item">
+                <div class="text">
+                    <!--<P th:text="${session.name}">未登录</P>-->
+                    <p sec:authentication="name" id="name"></p>
+                </div>
+                <i class="dropdown icon"></i>
+                <div class="menu">
+                    <a href="/logout" class="item">注销</a>
+                    <a href="/updatestart" class="item">个人信息</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<script th:inline="javascript">
+    var user=document.getElementById("name").innerText;
+    if(user=="anonymousUser")
+    {
+        $("#name").text("未登录");
+    }
+</script>
+<br>
+<br>
+<br>
+<br>
+<div class = "col-xs-12 col-sm-6 col-md-4 col-lg-4 col-lg-offset-4">
+<form id="register" action="/register" class="form-horizontal" role="form">
+    <!--用户名：<input type="text" id="username" name="username">-->
+    <!--<br>-->
+      <!--密码: <input type="text" id="password" name="password">-->
+    <!--<br>-->
+    <!--手机号：<input type="tel" id="phonenum" name="phonenum">-->
+    <!--<br>-->
+      <!--邮箱:<input type="email" id="emailaddress" name="emailaddress">-->
+    <!--<br>-->
+    <!--<input type="submit" id="submit" value="提交">-->
+    <!--<br>-->
+    <!--<input type="button" id="return" value="返回登录" onclick="window.location.href='http://localhost/loginstart'">-->
+    <div class="form-group">
+        <label for="username" class="col-sm-2 control-label">用户名：</label>
+        <div class="col-sm-10">
+            <input type="text" class="form-control" id="username" name="username" placeholder="请输入用户名">
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="password" class="col-sm-2 control-label">密码：</label>
+        <div class="col-sm-10">
+            <input type="text" class="form-control" id="password" name="password" placeholder="请输入密码">
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="phone" class="col-sm-2 control-label">手机号：</label>
+        <div class="col-sm-10">
+            <input type="text" class="form-control" id="phone" name="phonenum" placeholder="请输入手机号">
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="mail" class="col-sm-2 control-label">邮箱：</label>
+        <div class="col-sm-10">
+            <input type="text" class="form-control" id="mail" name="emailaddress" placeholder="请输入邮箱">
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-sm-offset-2 col-sm-10">
+            <button type="submit" class="btn btn-default">注册</button>
+            <a href="/loginstart">返回登录</a>
+        </div>
+    </div>
+
+</form>
+</div>
+<!--底部-->
+<footer class="navbar-inverse  navbar-fixed-bottom">
+    <div class="container">
+        底部内容区域
+    </div>
+</footer>
+<!--<div id="footer">-->
+<!--<footer class="ui inverted segment">-->
+    <!--<div class="ui center aligned container">-->
+        <!--<div class="ui inverted divided stackable grid">-->
+            <!--<div class="three wide column">-->
+                <!--<div class="ui inverted link list">-->
+                    <!--<div class="item">-->
+
+                    <!--</div>-->
+                <!--</div>-->
+            <!--</div>-->
+            <!--<div class="three wide column">-->
+                <!--<h4 class="ui inverted header m-text-thin m-text-spaced " >最新发布</h4>-->
+                <!--<div class="ui inverted link list">-->
+                    <!--<a href="#" class="item m-text-thin">用户</a>-->
+                    <!--<a href="#" class="item m-text-thin">用户</a>-->
+                    <!--<a href="#" class="item m-text-thin">用户</a>-->
+                <!--</div>-->
+            <!--</div>-->
+            <!--<div class="three wide column">-->
+                <!--<h4 class="ui inverted header m-text-thin m-text-spaced ">联系我</h4>-->
+                <!--<div class="ui inverted link list">-->
+                    <!--<a href="#" class="item m-text-thin">Email：403361459@qq.com</a>-->
+                    <!--<a href="#" class="item m-text-thin">QQ：403361459@qq.com</a>-->
+                <!--</div>-->
+            <!--</div>-->
+            <!--<div class="seven wide column">-->
+                <!--<h4 class="ui inverted header m-text-thin m-text-spaced ">需求征集发布系统</h4>-->
+                <!--<p class="m-text-thin m-text-spaced m-opacity-mini">WELCOME！</p>-->
+            <!--</div>-->
+        <!--</div>-->
+        <!--<div class="ui inverted section divider"></div>-->
+        <!--<p class="m-text-thin m-text-spaced m-opacity-tiny">Copyright © 2020 - 2021 Designed by gpy</p>-->
+    <!--</div>-->
+
+<!--</footer>-->
+<!--</div>-->
+
+</body>
+</html>

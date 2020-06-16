@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<head>
+    <meta charset="UTF-8">
+    <title>消息</title>
+    <link rel="stylesheet" href="/static/css/bootstrap.min.css">
+    <script src="/static/js/jquery.min.js"></script>
+    <script src="/static/js/semantic.min.js"></script>
+    <script src="/static/js/tablesort.min.js"></script>
+    <link rel="stylesheet" href="/static/css/semantic.min.css">
+    <link rel="stylesheet" href="/static/css/back.css">
+
+</head>
+
+<body>
+<nav class="ui inverted attached segment">
+    <div class="ui inverted menu">
+        <h2 class="ui teal header item" >江苏科技大学需求征集发布系统</h2>
+        <a href="/index" class="item" >首页</a>
+        <a href="/publish/others" class="item">查询</a>
+        <a href="/publish" class="item">发布</a>
+        <a href="/mypublish" class="item">我的发布</a>
+        <a href="/myabutment" class="item">我的对接</a>
+        <a href="/loginstart" class="item">登录/注册</a>
+        <div class="right m-item m-mobile-hide menu" style="padding-right: 10px">
+            <div class="ui dropdown  item">
+                <div class="text">
+                    <!--<P th:text="${session.name}">未登录</P>-->
+                    <p sec:authentication="name"  id="name"></p>
+                    <!--<p sec:authentication="principal.authorities"> </p>-->
+                </div>
+                <i class="dropdown icon"></i>
+                <div class="menu">
+                    <a href="/logout" class="item">注销</a>
+                    <a href="/updatestart" class="item">个人信息</a>
+                </div>
+            </div>
+        </div>
+        <div class="item">
+            <a  href="/system_Message"  class="item">系统消息：</a>
+            <i class="alarm icon" id="m1" ></i>
+        </div>
+        <div class="item" >
+            <a  href="/user_Message"  class="item">对接消息：</a>
+            <i class="alarm icon" id="m2"></i>
+        </div>
+        <script  th:inline="javascript">
+            var receiver=document.getElementById("name").innerText;
+            if(receiver!="anonymousUser")
+            {
+                setInterval("test()",500);
+                function test() {
+                    $.ajax({
+                        type: "POST",
+                        url: "/newMessage",
+                        async: false,
+                        data: {
+                            receiver:receiver
+                        },
+                        error: function (error) {
+                            alert("error!")
+                            //alert(JSON.stringify(error));
+                        },
+                        success: function (data) {
+                            if( [[${session.num}]]==null)
+                            {
+                                $("#m1").text(0);
+                            }
+                            else
+                            {
+                                $("#m1").text([[${session.num}]]);
+                            }
+                            if([[${session.num2}]]==null)
+                            {
+                                $("#m2").text(0);
+                            }
+                            else
+                            {
+                                $("#m2").text([[${session.num2}]]);
+                            }
+
+                        }
+                    })
+                }
+            }
+            else
+            {
+                $("#name").text("未登录");
+            }
+
+        </script>
+    </div>
+</nav>
+<div class="ui container">
+    <div style="margin-top:100px">
+        <button type="button" class="ui button" style="float: right" onclick="window.location.href='/history'">消息记录</button>
+        <br>
+        <br>
+    <table class="ui sortable celled table" id="message-content"  style="text-align: center">
+    <thead>
+    <th class="sorted ascending">消息</th>
+    <th class="sorted ascending">时间</th>
+    <th class="sorted ascending">来源</th>
+    <th class="sorted ascending">项目</th>
+    <th><button type="button" class="ui button" id="btn_all">全部已读</button></th>
+    </thead>
+    <tbody>
+    <tr th:each="s:${list}">
+        <td th:text="${s.message_content}"></td>
+        <td th:text="${#dates.format(s.date,'yyyy-MM-dd HH:mm')}"></td>
+        <td th:text="${s.sender}"></td>
+        <td><a th:href="@{'/index/detail?txtid='+${s.txtid}}"><h4 th:text="${s.title}"></h4></a></td>
+        <td style="text-align: center">
+            <button type="button" class="btnRead ui button">已读</button>
+            <input type="hidden" id="id" th:value="${s.id}">
+        </td>
+    </tr>
+    </tbody>
+</table>
+    </div>
+</div>
+<script type="text/javascript">
+    $(document).ready(function() {
+        $('table').tablesort()
+    });
+</script>
+<script type="text/javascript" th:inline="javascript">
+    var author=document.getElementById("name").innerText;
+    document.getElementById("btn_all").addEventListener('click',function()
+    {
+        $.ajax({
+            type: "POST",
+            url: "/already_read_all",
+            async: false,
+            data: {
+                author:author
+            },
+            error: function(error) {
+                alert("error!")
+                //alert(JSON.stringify(error));
+            },
+            success: function(data) {
+               // alert("success!")
+            }
+        });
+        window.location.reload();
+
+    },false);
+
+
+    $(document).ready(function() {
+
+       $("#message-content").on('click','.btnRead',function () {
+           // var author=[[${session.name}]];
+           var author=document.getElementById("name").innerText;
+           var id=$(this).next().val();
+
+            $.ajax({
+                type: "POST",
+                url: "/already_read",
+                async: false,
+                data: {
+                    author: author,
+                    id: id
+                },
+                error: function (error) {
+                    alert("error!")
+                    //alert(JSON.stringify(error));
+                },
+                success: function (data) {
+                  //  alert("success!")
+                }
+            });
+            window.location.reload();
+
+        });
+    });
+</script>
+<script>
+    $('.ui.dropdown').dropdown({
+        on : 'hover'
+    });
+</script>
+</body>
+</html>
